@@ -8,7 +8,7 @@ OnInit.module("TerrainIO.TerrainTemplate", function(require)
     ---@field iterateTiles fun():fun():nil|Tile, integer|nil, integer|nil returns tile, xIndex, yIndex
 
     ---@class InMemoryTerrainTemplate : TerrainTemplate
-    ---@field tiles table<integer, table<integer, Tile>> -- tiles[y][x] = tile
+    ---@field tiles table<integer, table<integer, Tile>> -- tiles[x][y] = tile
     InMemoryTerrainTemplate = {}
     InMemoryTerrainTemplate.__index = InMemoryTerrainTemplate
 

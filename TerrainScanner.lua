@@ -3,6 +3,8 @@ OnInit.module("TerrainIO.TerrainScanner", function(require)
     require "TerrainIO.TileResolution"
     require "TerrainIO.TerrainTemplate"
 
+    local singleTileResolution = TileResolution.create()
+
     ---@class TerrainScanner
     TerrainScanner = {}
 
@@ -16,10 +18,10 @@ OnInit.module("TerrainIO.TerrainScanner", function(require)
         if x1 > x2 then x1, x2 = x2, x1 end
         if y1 > y2 then y1, y2 = y2, y1 end
 
-        x1 = resolution:getTileCenter(x1)
-        x2 = resolution:getTileCenter(y1)
-        y1 = resolution:getTileCenter(x2)
-        y2 = resolution:getTileCenter(y2)
+        x1 = singleTileResolution:getTileCenter(x1)
+        x2 = singleTileResolution:getTileCenter(y1)
+        y1 = singleTileResolution:getTileCenter(x2)
+        y2 = singleTileResolution:getTileCenter(y2)
         local startX, startY = resolution:getTileIndexes(x1, y1)
         local endX, endY = resolution:getTileIndexes(x2, y2)
 
