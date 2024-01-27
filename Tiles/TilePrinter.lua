@@ -14,7 +14,7 @@ OnInit.module("TerrainIO.Tiles.TilesPrinter", function(require)
     ---@param resolution TileResolution
     ---@param startX number
     ---@param startY number
-    ---@param sourceTask TerrainTemplate
+    ---@param sourceTask TileTemplate
     function TerrainPrinter.PrintFrom(resolution, startX, startY, sourceTask)
         startX, startY = singleTileResolution:getTileCenter(startX), singleTileResolution:getTileCenter(startY)
         for tileInfo, xIndex, yIndex in sourceTask:iterateTiles() do

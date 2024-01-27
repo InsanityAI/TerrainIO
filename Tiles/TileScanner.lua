@@ -5,16 +5,16 @@ OnInit.module("TerrainIO.Tiles.TileScanner", function(require)
 
     local singleTileResolution = TileResolution.create()
 
-    ---@class TerrainScanner
-    TerrainScanner = {}
+    ---@class TileScanner
+    TileScanner = {}
 
     ---@param resolution TileResolution
     ---@param x1 number
     ---@param y1 number
     ---@param x2 number
     ---@param y2 number
-    ---@return OnDemandTerrainTemplate
-    function TerrainScanner.ScanBounds(resolution, x1, y1, x2, y2)
+    ---@return OnDemandTileTemplate
+    function TileScanner.ScanBounds(resolution, x1, y1, x2, y2)
         if x1 > x2 then x1, x2 = x2, x1 end
         if y1 > y2 then y1, y2 = y2, y1 end
 
@@ -32,14 +32,14 @@ OnInit.module("TerrainIO.Tiles.TileScanner", function(require)
             endY = y2,
             sizeX = endX - startX,
             sizeY = endY - startY,
-        }, OnDemandTerrainTemplate)
+        }, OnDemandTileTemplate)
     end
 
     ---@param resolution TileResolution
     ---@param rect rect
-    ---@return OnDemandTerrainTemplate
-    function TerrainScanner.ScanRect(resolution, rect)
-        return TerrainScanner.ScanBounds(resolution, GetRectMinX(rect), GetRectMinY(rect), GetRectMaxX(rect),
+    ---@return OnDemandTileTemplate
+    function TileScanner.ScanRect(resolution, rect)
+        return TileScanner.ScanBounds(resolution, GetRectMinX(rect), GetRectMinY(rect), GetRectMaxX(rect),
             GetRectMaxY(rect))
     end
 end)
