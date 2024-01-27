@@ -1,6 +1,6 @@
-if Debug then Debug.beginFile "TerrainIO.TerrainTemplate" end
-OnInit.module("TerrainIO.TerrainTemplate", function(require)
-    require "TerrainIO.Tile"
+if Debug then Debug.beginFile "TerrainIO.Tiles.TileTemplate" end
+OnInit.module("TerrainIO.Tiles.TileTemplate", function(require)
+    require "TerrainIO.Tiles.Tile"
 
     ---@class TerrainTemplate
     ---@field sizeX integer size in amount of tiles on X axis

@@ -1,5 +1,5 @@
-if Debug then Debug.beginFile "TerrainIO.AsyncTerrainTemplate" end
-OnInit.module("TerrainIO.AsyncTerrainTemplate", function(require)
+if Debug then Debug.beginFile "TerrainIO.Tiles.AsyncTileTemplate" end
+OnInit.module("TerrainIO.Tiles.AsyncTileTemplate", function(require)
     require.optional "TaskProcessor"
 
     if not Processor then

@@ -1,5 +1,5 @@
-if Debug then Debug.beginFile "TerrainIO.Tile" end
-OnInit.module("TerrainIO.Tile", function(require)
+if Debug then Debug.beginFile "TerrainIO.Tiles.Tile" end
+OnInit.module("TerrainIO.Tiles.Tile", function(require)
     ---@class Tile
     ---@field pathing table<pathingtype, boolean>
     ---@field height number

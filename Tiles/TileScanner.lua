@@ -1,7 +1,7 @@
-if Debug then Debug.beginFile "TerrainIO.TerrainScanner" end
-OnInit.module("TerrainIO.TerrainScanner", function(require)
-    require "TerrainIO.TileResolution"
-    require "TerrainIO.TerrainTemplate"
+if Debug then Debug.beginFile "TerrainIO.Tiles.TileScanner" end
+OnInit.module("TerrainIO.Tiles.TileScanner", function(require)
+    require "TerrainIO.Tiles.TileResolution"
+    require "TerrainIO.Tiles.TileTemplate"
 
     local singleTileResolution = TileResolution.create()
 

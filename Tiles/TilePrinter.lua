@@ -1,6 +1,6 @@
-if Debug then Debug.beginFile "TerrainIO.TerrainPrinter" end
-OnInit.module("TerrainIO.TerrainPrinter", function(require)
-    require "TerrainIO.TileResolution"
+if Debug then Debug.beginFile "TerrainIO.Tiles.TilesPrinter" end
+OnInit.module("TerrainIO.Tiles.TilesPrinter", function(require)
+    require "TerrainIO.Tiles.TileResolution"
 
     local SHAPE_CIRCLE = 0
     local SHAPE_SQUARE = 1

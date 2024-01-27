@@ -1,6 +1,6 @@
-if Debug then Debug.beginFile "TerrainIO.TileResolution" end
-OnInit.global("TerrainIO.TileResolution", function(require)
-    require "TerrainIO.Tile"
+if Debug then Debug.beginFile "TerrainIO.Tiles.TileResolution" end
+OnInit.global("TerrainIO.Tiles.TileResolution", function(require)
+    require "TerrainIO.Tiles.Tile"
     require "MapBounds"
     require "TerrainIO.IsTerrainPathableFixed"
 
