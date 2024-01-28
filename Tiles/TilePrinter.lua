@@ -33,10 +33,6 @@ OnInit.module("TerrainIO.Tiles.TilesPrinter", function(require)
                 SetTerrainPathable(x, y, PATHING_TYPE_PEONHARVESTPATHING, tileInfo.pathing[PATHING_TYPE_PEONHARVESTPATHING])
                 SetTerrainPathable(x, y, PATHING_TYPE_WALKABILITY, tileInfo.pathing[PATHING_TYPE_WALKABILITY])
             end
-
-            if tileInfo.height then
-                -- todo: raise terrain height
-            end
         end
     end
 

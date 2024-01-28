@@ -2,7 +2,6 @@ if Debug then Debug.beginFile "TerrainIO.Tiles.Tile" end
 OnInit.module("TerrainIO.Tiles.Tile", function(require)
     ---@class Tile
     ---@field pathing table<pathingtype, boolean>
-    ---@field height number
     ---@field getTileVariation fun():integer, integer
 
     ---@class SimpleTile: Tile

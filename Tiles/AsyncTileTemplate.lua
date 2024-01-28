@@ -8,15 +8,15 @@ OnInit.module("TerrainIO.Tiles.AsyncTileTemplate", function(require)
 
     local processor ---@type Processor
 
-    ---@param terrainTemplate TerrainTemplate
-    ---@return Observable InMemoryTerrainTemplate
-    function InMemoryTerrainTemplate.createAsync(terrainTemplate)
-        local newTerrainTemplate = setmetatable({}, InMemoryTerrainTemplate)
-        newTerrainTemplate.sizeX = terrainTemplate.sizeX
-        newTerrainTemplate.sizeY = terrainTemplate.sizeY
+    ---@param TileTemplate TileTemplate
+    ---@return Observable InMemoryTileTemplate
+    function InMemoryTileTemplate.createAsync(TileTemplate)
+        local newTileTemplate = setmetatable({}, InMemoryTileTemplate)
+        newTileTemplate.sizeX = TileTemplate.sizeX
+        newTileTemplate.sizeY = TileTemplate.sizeY
 
         local result = Subject.create()
-        local tileIterator = terrainTemplate:iterateTiles()
+        local tileIterator = TileTemplate:iterateTiles()
         local task = processor:enqueueTask(function(delay)
             return tileIterator()
         end, 100, nil, true)
@@ -33,10 +33,10 @@ OnInit.module("TerrainIO.Tiles.AsyncTileTemplate", function(require)
                 tiles[xIndex] = { [yIndex] = tile }
             end
         end, result.onError, function(delay)
-            result:onNext(delay, newTerrainTemplate)
+            result:onNext(delay, newTileTemplate)
             result:onCompleted()
         end)
-        newTerrainTemplate.tiles = tiles
+        newTileTemplate.tiles = tiles
         return result
     end
 

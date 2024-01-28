@@ -59,7 +59,7 @@ OnInit.module("TerrainIO.Tiles.TileTemplate", function(require)
         local x, y, xIndex, yIndex = self.startX, self.startY, 0, 1
         return function()
             xIndex = xIndex + 1
-            if xIndex > self.sizeX then x, y, xIndex, yIndex = self.startX, self.resolution:nextTileCoordinate(y), 1, y + 1 end
+            if xIndex > self.sizeX then x, y, xIndex, yIndex = self.startX, self.resolution:nextTileCoordinate(y), 1, yIndex + 1 end
             if yIndex > self.sizeY then return nil, nil, nil end
             local tileInfo = self.resolution:getTileForCoordinates(x, y)
             x = self.resolution:nextTileCoordinate(x)
