@@ -16,7 +16,7 @@ OnInit.module("TerrainIO.Height.AsyncHeightMap", function (require)
         newHeightMap.sizeY = heightMap.sizeY
 
         local result = Subject.create()
-        local tileIterator = heightMap:iterateTiles()
+        local tileIterator = heightMap:iterate()
         local task = processor:enqueueTask(function(delay)
             return tileIterator()
         end, 100, nil, true)

@@ -7,7 +7,7 @@ OnInit.module("TerrainIO.Height.HeightMap", function(require)
     ---@class HeightMap
     ---@field sizeX integer size in amount of tiles on X axis
     ---@field sizeY integer size in amount of tiles on Y axis
-    ---@field iterateTiles fun():fun():integer|nil, integer|nil, number|nil returns xIndex, yIndex, height?
+    ---@field iterate fun():fun():integer|nil, integer|nil, number|nil returns xIndex, yIndex, height?
 
     ---@class InMemoryHeightMap: HeightMap
     ---@field [integer] number[] self[x][y] = height
