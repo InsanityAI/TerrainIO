@@ -2,10 +2,12 @@ if Debug then Debug.beginFile "TerrainIO/Tiles/Tile" end
 OnInit.module("TerrainIO/Tiles/Tile", function(require)
     ---@class Tile
     ---@field pathing table<pathingtype, boolean>
-    ---@field getTileVariation fun():integer, integer
+    ---@field getTileVariation fun(self: Tile):integer, integer
+    ---@field isBlighted fun(self: Tile): boolean
 
     ---@class SimpleTile: Tile
     ---@field tile integer
+    ---@field blighted boolean
     ---@field variation integer
     SimpleTile = {}
     SimpleTile.__index = SimpleTile
@@ -25,6 +27,10 @@ OnInit.module("TerrainIO/Tiles/Tile", function(require)
     ---@return integer tile, integer variation
     function SimpleTile:getTileVariation()
         return self.tile, self.variation
+    end
+
+    function SimpleTile:isBlighted()
+        return self.pathing[PATHING_TYPE_BLIGHTPATHING] or false
     end
 
     ---@alias RandomTileSetup {varStart: integer, varEnd: integer, weight: number, tile: integer}
