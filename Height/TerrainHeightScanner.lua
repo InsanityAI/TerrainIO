@@ -12,8 +12,9 @@ OnInit.module("TerrainIO/Height/TerrainHeightScanner", function(require)
     ---@param y1 number
     ---@param x2 number
     ---@param y2 number
+    ---@param relativeHeight number?
     ---@return HeightMap
-    function TerrainHeightScanner.ScanBounds(x1, y1, x2, y2)
+    function TerrainHeightScanner.ScanBounds(x1, y1, x2, y2, relativeHeight)
         if x1 > x2 then x1, x2 = x2, x1 end
         if y1 > y2 then y1, y2 = y2, y1 end
 
@@ -31,13 +32,15 @@ OnInit.module("TerrainIO/Height/TerrainHeightScanner", function(require)
             endY = y2,
             sizeX = math.abs(endX - startX),
             sizeY = math.abs(endY - startY),
+            relativeHeight = relativeHeight or 0
         }, OnDemandHeightMap)
     end
 
     ---@param r rect
+    ---@param relativeHeight number?
     ---@return HeightMap
-    function TerrainHeightScanner.ScanRect(r)
-        return TerrainHeightScanner.ScanBounds(GetRectMinX(r), GetRectMinY(r), GetRectMaxX(r), GetRectMaxY(r))
+    function TerrainHeightScanner.ScanRect(r, relativeHeight)
+        return TerrainHeightScanner.ScanBounds(GetRectMinX(r), GetRectMinY(r), GetRectMaxX(r), GetRectMaxY(r), relativeHeight)
     end
 
 end)

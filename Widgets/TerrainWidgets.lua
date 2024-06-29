@@ -37,17 +37,20 @@ OnInit.module("TerrainIO/Widgets/TerrainWidgets", function(require)
     ---@field units Set
     ---@field destructables Set
     ---@field items Set
+    ---@field resolution TileResolution
     OnDemandTerrainWidgets = {}
     OnDemandTerrainWidgets.__index = OnDemandTerrainWidgets
 
+    ---@param resolution TileResolution
     ---@param rect rect
     ---@return OnDemandTerrainWidgets
-    function OnDemandTerrainWidgets.create(rect)
+    function OnDemandTerrainWidgets.create(rect, resolution)
         return setmetatable({
             rect = rect,
             units = Set.create(),
             destructables = Set.create(),
-            items = Set.create()
+            items = Set.create(),
+            resolution = resolution
     }, OnDemandTerrainWidgets)
     end
 
@@ -61,7 +64,8 @@ OnInit.module("TerrainIO/Widgets/TerrainWidgets", function(require)
         local destructablesDone = self.destructables.n == 0
         local itemsDone = self.items.n == 0
         local unitsDone = self.units.n == 0
-        local relativeX, relativeY = GetRectMinX(self.rect), GetRectMinY(self.rect)
+        local relativeX = self.resolution:getTileCenter(GetRectMinX(self.rect))
+        local relativeY = self.resolution:getTileCenter(GetRectMinY(self.rect))
         return function()
             i = i + 1
 

@@ -39,18 +39,19 @@ OnInit.module("TerrainIO/Height/HeightMap", function(require)
     ---@field startY number
     ---@field endX number
     ---@field endY number
+    ---@field relativeHeight number
     OnDemandHeightMap = {}
     OnDemandHeightMap.__index = OnDemandHeightMap
 
     ---@return fun():integer|nil, integer|nil, number|nil - xIndex, yIndex, height? (with offsetZ)
     function OnDemandHeightMap:iterate()
-        local x, y, xIndex, yIndex = self.startX, self.startY, 0, 1
+        local x, y, xIndex, yIndex = self.startX, self.startY, -1, 0
         return function()
             xIndex = xIndex + 1
-            if xIndex > self.sizeX then x, y, xIndex, yIndex = self.startX, singleTileResolution:nextTileCoordinate(y), 1, yIndex + 1 end
+            if xIndex > self.sizeX then x, y, xIndex, yIndex = self.startX, singleTileResolution:nextTileCoordinate(y), 0, yIndex + 1 end
             if yIndex > self.sizeY then return nil, nil, nil end
 
-            local height = GetPointZ(x, y)
+            local height = GetPointZ(x, y) - self.relativeHeight
             x = singleTileResolution:nextTileCoordinate(x)
 
             return xIndex, yIndex, height
