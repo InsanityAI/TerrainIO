@@ -1,21 +1,11 @@
-if Debug then Debug.beginFile "TerrainIO.Tiles.TileResolution" end
-OnInit.global("TerrainIO.Tiles.TileResolution", function(require)
-    require "TerrainIO.Tiles.Tile"
+if Debug then Debug.beginFile "TerrainIO/Tiles/TileResolution" end
+OnInit.global("TerrainIO/Tiles/TileResolution", function(require)
+    require "TerrainIO/Tiles/Tile"
     require "MapBounds"
-    require "TerrainIO.IsTerrainPathableFixed"
+    require "TerrainIO/IsTerrainPathableFixed"
 
     local TILE_SIZE_DISTANCE_UNITS = 128
     local TILE_SIZE_REVERSE = 1 / TILE_SIZE_DISTANCE_UNITS
-
-    local point = Location(0, 0)
-
-    ---@param x number
-    ---@param y number
-    ---@return number z
-    local function getPointZ(x, y)
-        MoveLocation(point, x, y)
-        return GetLocationZ(point)
-    end
 
     ---@class TileResolution
     ---@field sizeInTiles number
@@ -47,7 +37,7 @@ OnInit.global("TerrainIO.Tiles.TileResolution", function(require)
             [PATHING_TYPE_PEONHARVESTPATHING] = IsTerrainPathableFixed(x, y, PATHING_TYPE_PEONHARVESTPATHING),
         }
 
-        return SimpleTile.create(tile, variation, pathing, getPointZ(x, y))
+        return SimpleTile.create(tile, variation, pathing)
     end
 
     ---@param sizeInTiles? integer 1 tilesize is 128 wc3 distance units (default: 1)

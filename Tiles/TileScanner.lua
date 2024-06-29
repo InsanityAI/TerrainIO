@@ -1,7 +1,7 @@
-if Debug then Debug.beginFile "TerrainIO.Tiles.TileScanner" end
-OnInit.module("TerrainIO.Tiles.TileScanner", function(require)
-    require "TerrainIO.Tiles.TileResolution"
-    require "TerrainIO.Tiles.TileTemplate"
+if Debug then Debug.beginFile "TerrainIO/Tiles/TileScanner" end
+OnInit.module("TerrainIO/Tiles/TileScanner", function(require)
+    require "TerrainIO/Tiles/TileResolution"
+    require "TerrainIO/Tiles/TileTemplate"
 
     local singleTileResolution = TileResolution.create()
 
@@ -30,8 +30,9 @@ OnInit.module("TerrainIO.Tiles.TileScanner", function(require)
             startY = y1,
             endX = x2,
             endY = y2,
-            sizeX = endX - startX,
-            sizeY = endY - startY,
+            resolution = resolution,
+            sizeX = math.abs(endX - startX),
+            sizeY = math.abs(endY - startY),
         }, OnDemandTileTemplate)
     end
 

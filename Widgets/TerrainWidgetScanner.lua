@@ -1,7 +1,7 @@
-if Debug then Debug.beginFile "TerrainIO.Widgets.TerrainWidgetScanner" end
-OnInit.module("TerrainIO.Widgets.TerrainWidgetScanner", function (require)
-    require "TerrainIO.Widgets.TerrainWidget"
-    require "TerrainIO.Widgets.TerrainWidgets"
+if Debug then Debug.beginFile "TerrainIO/Widgets/TerrainWidgetScanner" end
+OnInit.module("TerrainIO/Widgets/TerrainWidgetScanner", function (require)
+    require "TerrainIO/Widgets/TerrainWidget"
+    require "TerrainIO/Widgets/TerrainWidgets"
 
     TerrainWidgetScanner = {}
 

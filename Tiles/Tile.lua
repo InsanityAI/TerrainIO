@@ -1,5 +1,5 @@
-if Debug then Debug.beginFile "TerrainIO.Tiles.Tile" end
-OnInit.module("TerrainIO.Tiles.Tile", function(require)
+if Debug then Debug.beginFile "TerrainIO/Tiles/Tile" end
+OnInit.module("TerrainIO/Tiles/Tile", function(require)
     ---@class Tile
     ---@field pathing table<pathingtype, boolean>
     ---@field getTileVariation fun():integer, integer
@@ -13,14 +13,12 @@ OnInit.module("TerrainIO.Tiles.Tile", function(require)
     ---@param tile integer
     ---@param variation integer
     ---@param pathing table<pathingtype, boolean>
-    ---@param height number
     ---@return Tile
-    function SimpleTile.create(tile, variation, pathing, height)
+    function SimpleTile.create(tile, variation, pathing)
         return setmetatable({
             tile = tile,
             variation = variation,
-            pathing = pathing,
-            height = height
+            pathing = pathing
         }, SimpleTile)
     end
 
@@ -38,10 +36,9 @@ OnInit.module("TerrainIO.Tiles.Tile", function(require)
     RandomTile.__index = RandomTile
 
     ---@param pathing table<pathingtype, boolean>
-    ---@param height number
     ---@param ... RandomTileSetup
     ---@return RandomTile
-    function RandomTile.create(pathing, height, ...)
+    function RandomTile.create(pathing, ...)
         local o = setmetatable(table.pack(...), RandomTile)
         local totalWeight = 0.00
         local cumWeight = 0.00

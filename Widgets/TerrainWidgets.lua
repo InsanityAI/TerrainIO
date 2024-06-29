@@ -1,6 +1,6 @@
-if Debug then Debug.beginFile "TerrainIO.Widgets.TerrainWidgets" end
-OnInit.module("TerrainIO.Widgets.TerrainWidgets", function(require)
-    require "TerrainIO.Widgets.TerrainWidgets"
+if Debug then Debug.beginFile "TerrainIO/Widgets/TerrainWidgets" end
+OnInit.module("TerrainIO/Widgets/TerrainWidgets", function(require)
+    require "TerrainIO/Widgets/TerrainWidget"
     require "SetUtils"
 
     ---@class TerrainWidgets
@@ -53,14 +53,15 @@ OnInit.module("TerrainIO.Widgets.TerrainWidgets", function(require)
 
     ---@return fun():TerrainWidget|nil
     function OnDemandTerrainWidgets:iterate()
-        SetUtils.getDestructablesInRect(self.rect, self.units)
-        SetUtils.getItemsInRect(self.rect, self.destructables)
-        SetUtils.getUnitsInRect(self.rect, self.items)
+        SetUtils.getDestructablesInRect(self.rect, self.destructables)
+        SetUtils.getItemsInRect(self.rect, self.items)
+        SetUtils.getUnitsInRect(self.rect, self.units)
 
         local i = 0
         local destructablesDone = self.destructables.n == 0
         local itemsDone = self.items.n == 0
         local unitsDone = self.units.n == 0
+        local relativeX, relativeY = GetRectMinX(self.rect), GetRectMinY(self.rect)
         return function()
             i = i + 1
 
@@ -70,7 +71,7 @@ OnInit.module("TerrainIO.Widgets.TerrainWidgets", function(require)
                     destructablesDone = true
                     i = 0
                 end
-                return TerrainDestructable.createFrom(destructable)
+                return TerrainDestructable.createFrom(destructable, relativeX, relativeY)
             end
 
             if not itemsDone then
@@ -79,7 +80,7 @@ OnInit.module("TerrainIO.Widgets.TerrainWidgets", function(require)
                     itemsDone = true
                     i = 0
                 end
-                return TerrainItem.createFrom(item)
+                return TerrainItem.createFrom(item, relativeX, relativeY)
             end
 
             if not unitsDone then
@@ -88,7 +89,7 @@ OnInit.module("TerrainIO.Widgets.TerrainWidgets", function(require)
                     unitsDone = true
                     i = 0
                 end
-                return TerrainUnit.createFrom(unit)
+                return TerrainUnit.createFrom(unit, relativeX, relativeY)
             end
 
             return nil

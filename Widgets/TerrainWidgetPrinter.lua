@@ -1,6 +1,6 @@
-if Debug then Debug.beginFile "TerrainIO.Widgets.TerrainWidgetPrinter" end
-OnInit.module("TerrainIO.Widgets.TerrainWidgetPrinter", function (require)
-    require "TerrainIO.Widgets.TerrainWidgets"
+if Debug then Debug.beginFile "TerrainIO/Widgets/TerrainWidgetPrinter" end
+OnInit.module("TerrainIO/Widgets/TerrainWidgetPrinter", function (require)
+    require "TerrainIO/Widgets/TerrainWidgets"
 
     ---@class TerrainWidgetPrinter
     TerrainWidgetPrinter = {}

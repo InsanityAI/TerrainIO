@@ -1,5 +1,5 @@
-if Debug then Debug.beginFile "TerrainIO.Tiles.TerrainHeightPrinter" end
-OnInit.module("TerrainIO.Tiles.TerrainHeightPrinter", function(require)
+if Debug then Debug.beginFile "TerrainIO/Height/TerrainHeightPrinter" end
+OnInit.module("TerrainIO/Height/TerrainHeightPrinter", function(require)
     local singleTileResolution = TileResolution.create()
 
     ---@class TerrainHeightPrinter
@@ -11,7 +11,7 @@ OnInit.module("TerrainIO.Tiles.TerrainHeightPrinter", function(require)
     ---@param heightMap HeightMap
     function TerrainHeightPrinter.PrintFrom(startX, startY, heightMap)
         startX, startY = singleTileResolution:getTileCenter(startX), singleTileResolution:getTileCenter(startY)
-        for xIndex, yIndex, height in heightMap:iterateTiles() do
+        for xIndex, yIndex, height in heightMap:iterate() do
             local x, y = startX + xIndex * singleTileResolution.tileSize, startY + yIndex * singleTileResolution.tileSize
             TerrainDeformCrater(x, y, singleTileResolution.tileSize, -height, 1, true)
         end

@@ -1,6 +1,6 @@
-if Debug then Debug.beginFile "TerrainIO.Height.TerrainHeightScanner" end
-OnInit.module("TerrainIO.Height.TerrainHeightScanner", function(require)
-    require "TerrainIO.Tiles.TileResolution"
+if Debug then Debug.beginFile "TerrainIO/Height/TerrainHeightScanner" end
+OnInit.module("TerrainIO/Height/TerrainHeightScanner", function(require)
+    require "TerrainIO/Tiles/TileResolution"
 
     local singleTileResolution = TileResolution.create()
 
@@ -29,8 +29,8 @@ OnInit.module("TerrainIO.Height.TerrainHeightScanner", function(require)
             startY = y1,
             endX = x2,
             endY = y2,
-            sizeX = endX - startX,
-            sizeY = endY - startY,
+            sizeX = math.abs(endX - startX),
+            sizeY = math.abs(endY - startY),
         }, OnDemandHeightMap)
     end
 

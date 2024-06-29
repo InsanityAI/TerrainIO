@@ -1,21 +1,21 @@
-if Debug then Debug.beginFile "TerrainIO.Tiles.TilesPrinter" end
-OnInit.module("TerrainIO.Tiles.TilesPrinter", function(require)
-    require "TerrainIO.Tiles.TileResolution"
+if Debug then Debug.beginFile "TerrainIO/Tiles/TilePrinter" end
+OnInit.module("TerrainIO/Tiles/TilePrinter", function(require)
+    require "TerrainIO/Tiles/TileResolution"
 
     local SHAPE_CIRCLE = 0
     local SHAPE_SQUARE = 1
 
     local singleTileResolution = TileResolution.create()
 
-    ---@class TerrainPrinter
-    TerrainPrinter = {}
+    ---@class TilePrinter
+    TilePrinter = {}
 
     -- prints template from starting point towards north and east, (up and right)
     ---@param resolution TileResolution
     ---@param startX number
     ---@param startY number
     ---@param sourceTask TileTemplate
-    function TerrainPrinter.PrintFrom(resolution, startX, startY, sourceTask)
+    function TilePrinter.PrintFrom(resolution, startX, startY, sourceTask)
         startX, startY = singleTileResolution:getTileCenter(startX), singleTileResolution:getTileCenter(startY)
         for tileInfo, xIndex, yIndex in sourceTask:iterateTiles() do
             local x, y = startX + xIndex * resolution.tileSize, startY + yIndex * resolution.tileSize

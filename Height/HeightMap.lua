@@ -1,13 +1,13 @@
-if Debug then Debug.beginFile "TerrainIO.Height.HeightMap" end
-OnInit.module("TerrainIO.Height.HeightMap", function(require)
-    require "TerrainIO.Tiles.TileResolution"
+if Debug then Debug.beginFile "TerrainIO/Height/HeightMap" end
+OnInit.module("TerrainIO/Height/HeightMap", function(require)
+    require "TerrainIO/Tiles/TileResolution"
 
     local singleTileResolution = TileResolution.create()
 
     ---@class HeightMap
     ---@field sizeX integer size in amount of tiles on X axis
     ---@field sizeY integer size in amount of tiles on Y axis
-    ---@field iterateTiles fun():fun():integer|nil, integer|nil, number|nil returns xIndex, yIndex, height?
+    ---@field iterate fun():fun():integer|nil, integer|nil, number|nil returns xIndex, yIndex, height?
 
     ---@class InMemoryHeightMap: HeightMap
     ---@field [integer] number[] self[x][y] = height
@@ -31,19 +31,6 @@ OnInit.module("TerrainIO.Height.HeightMap", function(require)
             if x > self.sizeX then x, y = 1, y + 1 end
             if y > self.sizeY then return nil, nil, nil end
             return x, y, self:getHeight(x, y)
-        end
-    end
-
-    -- Honestly this should have been a part of WC3 API, every system is either forced to be dependant on something that does this
-    -- or create it's own variation, wish there was a standardized helper lib for lil snippets like these.
-    if not GetPointZ then
-        local point = Location(0, 0)
-        ---@param x number
-        ---@param y number
-        ---@return number z
-        GetPointZ = function(x, y)
-            MoveLocation(point,x,y)
-            return GetLocationZ(point)
         end
     end
 
