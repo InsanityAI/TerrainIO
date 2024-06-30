@@ -2,7 +2,7 @@ if Debug then Debug.beginFile "TerrainIO/Height/HeightMap" end
 OnInit.module("TerrainIO/Height/HeightMap", function(require)
     require "TerrainIO/Tiles/TileResolution"
 
-    local singleTileResolution = TileResolution.create()
+    local singleTileResolution = TileResolution.get()
 
     ---@class HeightMap
     ---@field sizeX integer size in amount of tiles on X axis

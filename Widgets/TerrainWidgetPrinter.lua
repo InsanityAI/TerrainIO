@@ -2,7 +2,7 @@ if Debug then Debug.beginFile "TerrainIO/Widgets/TerrainWidgetPrinter" end
 OnInit.module("TerrainIO/Widgets/TerrainWidgetPrinter", function (require)
     require "TerrainIO/Widgets/TerrainWidgets"
     require "TerrainIO/Tiles/TileResolution"
-    local singleTileResolution = TileResolution.create()
+    local singleTileResolution = TileResolution.get()
 
     ---@class TerrainWidgetPrinter
     TerrainWidgetPrinter = {}

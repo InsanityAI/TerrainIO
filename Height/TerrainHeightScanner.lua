@@ -2,7 +2,7 @@ if Debug then Debug.beginFile "TerrainIO/Height/TerrainHeightScanner" end
 OnInit.module("TerrainIO/Height/TerrainHeightScanner", function(require)
     require "TerrainIO/Tiles/TileResolution"
 
-    local singleTileResolution = TileResolution.create()
+    local singleTileResolution = TileResolution.get()
 
     ---@class TerrainHeightScanner
     TerrainHeightScanner = {}

@@ -3,6 +3,7 @@ OnInit.global("TerrainIO/Tiles/TileResolution", function(require)
     require "TerrainIO/Tiles/Tile"
     require "MapBounds"
     require "TerrainIO/IsTerrainPathableFixed"
+    require "Cache"
 
     local TILE_SIZE_DISTANCE_UNITS = 128
     local TILE_SIZE_REVERSE = 1 / TILE_SIZE_DISTANCE_UNITS
@@ -40,11 +41,9 @@ OnInit.global("TerrainIO/Tiles/TileResolution", function(require)
         return SimpleTile.create(tile, variation, pathing, IsPointBlighted(x, y))
     end
 
-    ---@param sizeInTiles? integer 1 tilesize is 128 wc3 distance units (default: 1)
-    ---@return TileResolution
-    function TileResolution.create(sizeInTiles)
+    local TileResolutionCache = Cache.create(function(sizeInTiles)
         if sizeInTiles ~= nil then
-            assert(type(sizeInTiles) == "number" and math.fmod(sizeInTiles, 1) == sizeInTiles,
+            assert(type(sizeInTiles) == "number" and math.modf(sizeInTiles) == sizeInTiles,
                 "Argument 'sizeInTiles' must be an integer!")
             assert(sizeInTiles ~= 0, "Argument 'sizeInTiles' cannot be 0!")
             assert(sizeInTiles > 0, "Argument 'sizeInTiles' cannot be negative!")
@@ -62,6 +61,12 @@ OnInit.global("TerrainIO/Tiles/TileResolution", function(require)
         o.maxIndexX = WorldBounds.sizeX / o.size
         o.maxIndexY = WorldBounds.sizeY / o.size
         return o
+    end, 1)
+
+    ---@param sizeInTiles? integer 1 tilesize is 128 wc3 distance units (default: 1)
+    ---@return TileResolution
+    function TileResolution.get(sizeInTiles)
+        return TileResolutionCache:get(sizeInTiles or 1)
     end
 
     ---@param a number

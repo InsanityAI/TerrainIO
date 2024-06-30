@@ -3,7 +3,7 @@ OnInit.module("TerrainIO/Tiles/TileScanner", function(require)
     require "TerrainIO/Tiles/TileResolution"
     require "TerrainIO/Tiles/TileTemplate"
 
-    local singleTileResolution = TileResolution.create()
+    local singleTileResolution = TileResolution.get()
 
     ---@class TileScanner
     TileScanner = {}

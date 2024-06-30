@@ -1,6 +1,6 @@
 if Debug then Debug.beginFile "TerrainIO/Height/TerrainHeightPrinter" end
 OnInit.module("TerrainIO/Height/TerrainHeightPrinter", function(require)
-    local singleTileResolution = TileResolution.create()
+    local singleTileResolution = TileResolution.get()
 
     ---@class TerrainHeightPrinter
     TerrainHeightPrinter = {}

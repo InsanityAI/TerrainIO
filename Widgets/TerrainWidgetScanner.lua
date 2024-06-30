@@ -3,7 +3,7 @@ OnInit.module("TerrainIO/Widgets/TerrainWidgetScanner", function (require)
     require "TerrainIO/Widgets/TerrainWidget"
     require "TerrainIO/Widgets/TerrainWidgets"
     require "TerrainIO/Tiles/TileResolution"
-    local singleTileResolution = TileResolution.create()
+    local singleTileResolution = TileResolution.get()
 
     TerrainWidgetScanner = {}
 

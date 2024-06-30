@@ -6,7 +6,7 @@ OnInit.module("TerrainIO/Tiles/TilePrinter", function(require)
     local SHAPE_SQUARE = 1
     local playerNeutral = Player(PLAYER_NEUTRAL_PASSIVE)
 
-    local singleTileResolution = TileResolution.create()
+    local singleTileResolution = TileResolution.get()
 
     ---@class TilePrinter
     TilePrinter = {}
