@@ -1,12 +1,12 @@
-if Debug then Debug.beginFile "TerrainIO.Height.AsyncHeightMap" end
-OnInit.module("TerrainIO.Height.AsyncHeightMap", function (require)
+if Debug then Debug.beginFile "TerrainIO/Height/AsyncHeightMap" end
+OnInit.module("TerrainIO/Height/AsyncHeightMap", function (require)
     require.optional "TaskProcessor"
 
-    if not Processor then
+    if not TaskProcessor then
         return
     end
 
-    local processor ---@type Processor
+    local processor ---@type TaskProcessor
 
     ---@param heightMap HeightMap
     ---@return Observable InMemoryHeightMap
@@ -17,9 +17,7 @@ OnInit.module("TerrainIO.Height.AsyncHeightMap", function (require)
 
         local result = Subject.create()
         local tileIterator = heightMap:iterate()
-        local task = processor:enqueueTask(function(delay)
-            return tileIterator()
-        end, 100, nil, true)
+        local task = processor:enqueuePeriodic(tileIterator, 0, 100, TaskAPI.REACTIVE) --[[@as TaskObservable]]
 
         ---@param delay number
         ---@param xIndex integer
@@ -39,7 +37,7 @@ OnInit.module("TerrainIO.Height.AsyncHeightMap", function (require)
     end
 
     OnInit.trig(function()
-        processor = Processor.create(1)
+        processor = TaskProcessor.create(1)
     end)
 end)
 if Debug then Debug.endFile() end

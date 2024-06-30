@@ -1,5 +1,5 @@
-if Debug then Debug.beginFile "TerrainIO.Widget.TerrainWidget" end
-OnInit.module("TerrainIO.Widget.TerrainWidget", function(require)
+if Debug then Debug.beginFile "TerrainIO/Widgets/TerrainWidget" end
+OnInit.module("TerrainIO/Widgets/TerrainWidget", function(require)
     ---@enum TerrainWidgetType
     TerrainWidgetType = {
         DESTRUCTABLE = 1,
@@ -46,13 +46,15 @@ OnInit.module("TerrainIO.Widget.TerrainWidget", function(require)
     end
 
     ---@param destructable destructable
+    ---@param relativeX number
+    ---@param relativeY number
     ---@return TerrainDestructable
-    function TerrainDestructable.createFrom(destructable)
+    function TerrainDestructable.createFrom(destructable, relativeX, relativeY)
         assert(destructable ~= nil, "Destructable cannot be nil!")
         return setmetatable({
             objectId = GetDestructableTypeId(destructable),
-            x = GetDestructableX(destructable),
-            y = GetDestructableY(destructable),
+            x = GetDestructableX(destructable) - relativeX,
+            y = GetDestructableY(destructable) - relativeY,
             -- how to get Z?
             facing = bj_UNIT_FACING, -- how to get facing?
             life = GetDestructableLife(destructable)
@@ -130,12 +132,14 @@ OnInit.module("TerrainIO.Widget.TerrainWidget", function(require)
     end
 
     ---@param item item
+    ---@param relativeX number
+    ---@param relativeY number
     ---@return TerrainItem
-    function TerrainItem.createFrom(item)
+    function TerrainItem.createFrom(item, relativeX, relativeY)
         return setmetatable({
             objectId = GetItemTypeId(item),
-            x = GetItemX(item),
-            y = GetItemY(item),
+            x = GetItemX(item) - relativeX,
+            y = GetItemY(item) - relativeY,
             life = GetWidgetLife(item),
             pawnable = IsItemPawnable(item),
             visible = IsItemVisible(item),
@@ -202,12 +206,14 @@ OnInit.module("TerrainIO.Widget.TerrainWidget", function(require)
     end
 
     ---@param unit unit
+    ---@param relativeX number
+    ---@param relativeY number
     ---@return TerrainUnit
-    function TerrainUnit.createFrom(unit)
+    function TerrainUnit.createFrom(unit, relativeX, relativeY)
         return setmetatable({
             objectId = GetUnitTypeId(unit),
-            x = GetUnitX(unit),
-            y = GetUnitY(unit),
+            x = GetUnitX(unit) - relativeX,
+            y = GetUnitY(unit) - relativeY,
             z = GetUnitFlyHeight(unit),
             facing = GetUnitFacing(unit),
             life = GetUnitState(unit, UNIT_STATE_LIFE),

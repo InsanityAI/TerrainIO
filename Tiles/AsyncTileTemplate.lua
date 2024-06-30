@@ -1,12 +1,12 @@
-if Debug then Debug.beginFile "TerrainIO.Tiles.AsyncTileTemplate" end
-OnInit.module("TerrainIO.Tiles.AsyncTileTemplate", function(require)
+if Debug then Debug.beginFile "TerrainIO/Tiles/AsyncTileTemplate" end
+OnInit.module("TerrainIO/Tiles/AsyncTileTemplate", function(require)
     require.optional "TaskProcessor"
 
-    if not Processor then
+    if not TaskProcessor then
         return
     end
 
-    local processor ---@type Processor
+    local processor ---@type TaskProcessor
 
     ---@param TileTemplate TileTemplate
     ---@return Observable InMemoryTileTemplate
@@ -17,9 +17,7 @@ OnInit.module("TerrainIO.Tiles.AsyncTileTemplate", function(require)
 
         local result = Subject.create()
         local tileIterator = TileTemplate:iterateTiles()
-        local task = processor:enqueueTask(function(delay)
-            return tileIterator()
-        end, 100, nil, true)
+        local task = processor:enqueuePeriodic(tileIterator, 0, 100, TaskAPI.REACTIVE) --[[@as TaskObservable]]
 
         local tiles = {}
         ---@param delay number
@@ -41,7 +39,7 @@ OnInit.module("TerrainIO.Tiles.AsyncTileTemplate", function(require)
     end
 
     OnInit.trig(function()
-        processor = Processor.create(1)
+        processor = TaskProcessor.create(1)
     end)
 end)
 if Debug then Debug.endFile() end

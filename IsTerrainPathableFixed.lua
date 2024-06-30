@@ -1,5 +1,5 @@
-if Debug then Debug.beginFile "TerrainIO.IsTerrainPathableFixed" end
-OnInit.module("TerrainIO.IsTerrainPathableFixed", function()
+if Debug then Debug.beginFile "TerrainIO/IsTerrainPathableFixed" end
+OnInit.module("TerrainIO/IsTerrainPathableFixed", function()
     --[[ by Insanity_AI
         Offers a fixed variation of IsTerrainPathable native, where most of pathingtypes results come out reversed in context to SetTerrainPathable native.
         PATHING_TYPE_BLIGHTPATHING stays the same, other PATHING_TYPES are reversed back into correct result.

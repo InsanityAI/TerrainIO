@@ -1,8 +1,8 @@
-if Debug then Debug.beginFile "TerrainIO.Height.HeightMap" end
-OnInit.module("TerrainIO.Height.HeightMap", function(require)
-    require "TerrainIO.Tiles.TileResolution"
+if Debug then Debug.beginFile "TerrainIO/Height/HeightMap" end
+OnInit.module("TerrainIO/Height/HeightMap", function(require)
+    require "TerrainIO/Tiles/TileResolution"
 
-    local singleTileResolution = TileResolution.create()
+    local singleTileResolution = TileResolution.get()
 
     ---@class HeightMap
     ---@field sizeX integer size in amount of tiles on X axis
@@ -34,36 +34,24 @@ OnInit.module("TerrainIO.Height.HeightMap", function(require)
         end
     end
 
-    -- Honestly this should have been a part of WC3 API, every system is either forced to be dependant on something that does this
-    -- or create it's own variation, wish there was a standardized helper lib for lil snippets like these.
-    if not GetPointZ then
-        local point = Location(0, 0)
-        ---@param x number
-        ---@param y number
-        ---@return number z
-        GetPointZ = function(x, y)
-            MoveLocation(point,x,y)
-            return GetLocationZ(point)
-        end
-    end
-
     ---@class OnDemandHeightMap: HeightMap
     ---@field startX number
     ---@field startY number
     ---@field endX number
     ---@field endY number
+    ---@field relativeHeight number
     OnDemandHeightMap = {}
     OnDemandHeightMap.__index = OnDemandHeightMap
 
     ---@return fun():integer|nil, integer|nil, number|nil - xIndex, yIndex, height? (with offsetZ)
     function OnDemandHeightMap:iterate()
-        local x, y, xIndex, yIndex = self.startX, self.startY, 0, 1
+        local x, y, xIndex, yIndex = self.startX, self.startY, -1, 0
         return function()
             xIndex = xIndex + 1
-            if xIndex > self.sizeX then x, y, xIndex, yIndex = self.startX, singleTileResolution:nextTileCoordinate(y), 1, yIndex + 1 end
+            if xIndex > self.sizeX then x, y, xIndex, yIndex = self.startX, singleTileResolution:nextTileCoordinate(y), 0, yIndex + 1 end
             if yIndex > self.sizeY then return nil, nil, nil end
 
-            local height = GetPointZ(x, y)
+            local height = GetPointZ(x, y) - self.relativeHeight
             x = singleTileResolution:nextTileCoordinate(x)
 
             return xIndex, yIndex, height

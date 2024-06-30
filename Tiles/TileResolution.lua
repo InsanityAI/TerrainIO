@@ -1,21 +1,12 @@
-if Debug then Debug.beginFile "TerrainIO.Tiles.TileResolution" end
-OnInit.global("TerrainIO.Tiles.TileResolution", function(require)
-    require "TerrainIO.Tiles.Tile"
+if Debug then Debug.beginFile "TerrainIO/Tiles/TileResolution" end
+OnInit.global("TerrainIO/Tiles/TileResolution", function(require)
+    require "TerrainIO/Tiles/Tile"
     require "MapBounds"
-    require "TerrainIO.IsTerrainPathableFixed"
+    require "TerrainIO/IsTerrainPathableFixed"
+    require "Cache"
 
     local TILE_SIZE_DISTANCE_UNITS = 128
     local TILE_SIZE_REVERSE = 1 / TILE_SIZE_DISTANCE_UNITS
-
-    local point = Location(0, 0)
-
-    ---@param x number
-    ---@param y number
-    ---@return number z
-    local function getPointZ(x, y)
-        MoveLocation(point, x, y)
-        return GetLocationZ(point)
-    end
 
     ---@class TileResolution
     ---@field sizeInTiles number
@@ -47,14 +38,12 @@ OnInit.global("TerrainIO.Tiles.TileResolution", function(require)
             [PATHING_TYPE_PEONHARVESTPATHING] = IsTerrainPathableFixed(x, y, PATHING_TYPE_PEONHARVESTPATHING),
         }
 
-        return SimpleTile.create(tile, variation, pathing, getPointZ(x, y))
+        return SimpleTile.create(tile, variation, pathing, IsPointBlighted(x, y))
     end
 
-    ---@param sizeInTiles? integer 1 tilesize is 128 wc3 distance units (default: 1)
-    ---@return TileResolution
-    function TileResolution.create(sizeInTiles)
+    local TileResolutionCache = Cache.create(function(sizeInTiles)
         if sizeInTiles ~= nil then
-            assert(type(sizeInTiles) == "number" and math.fmod(sizeInTiles, 1) == sizeInTiles,
+            assert(type(sizeInTiles) == "number" and math.modf(sizeInTiles) == sizeInTiles,
                 "Argument 'sizeInTiles' must be an integer!")
             assert(sizeInTiles ~= 0, "Argument 'sizeInTiles' cannot be 0!")
             assert(sizeInTiles > 0, "Argument 'sizeInTiles' cannot be negative!")
@@ -72,12 +61,18 @@ OnInit.global("TerrainIO.Tiles.TileResolution", function(require)
         o.maxIndexX = WorldBounds.sizeX / o.size
         o.maxIndexY = WorldBounds.sizeY / o.size
         return o
+    end, 1)
+
+    ---@param sizeInTiles? integer 1 tilesize is 128 wc3 distance units (default: 1)
+    ---@return TileResolution
+    function TileResolution.get(sizeInTiles)
+        return TileResolutionCache:get(sizeInTiles or 1)
     end
 
     ---@param a number
     ---@param ratio number [0.00, 1.00]
     function TileResolution:getTileCoordinateAtRatio(a, ratio)
-        return (math.modf(a * self.reverseTileSize) + (a < 0 and -ratio or ratio)) * self.tileSize
+        return (math.modf(a * self.reverseTileSize) + ratio - 0.5) * self.tileSize
     end
 
     ---@param a number
@@ -100,7 +95,7 @@ OnInit.global("TerrainIO.Tiles.TileResolution", function(require)
     function TileResolution:getTileForIndexes(xIndex, yIndex)
         local x = self:getTileCenter(WorldBounds.minX + xIndex * self.tileSize)
         local y = self:getTileCenter(WorldBounds.minY + yIndex * self.tileSize)
-        return fetchTile(self, xIndex, yIndex, x, y)
+        return self.cache:get(self, xIndex, yIndex, x, y)
     end
 
     ---@param x number
@@ -110,7 +105,7 @@ OnInit.global("TerrainIO.Tiles.TileResolution", function(require)
         x = self:getTileCenter(x)
         y = self:getTileCenter(y)
         local xIndex, yIndex = self:getTileIndexes(x, y)
-        return fetchTile(self, xIndex, yIndex, x, y)
+        return self.cache:get(self, xIndex, yIndex, x, y)
     end
 
     ---@param a number
@@ -154,11 +149,15 @@ OnInit.global("TerrainIO.Tiles.TileResolution", function(require)
         return self:getTileMinCenterMax(WorldBounds.minY + yIndex * self.tileSize)
     end
 
+    local indexX, indexY ---@type number, number
+
     ---@param x number
     ---@param y number
     ---@return integer xIndex, integer yIndex
     function TileResolution:getTileIndexes(x, y)
-        return (x - WorldBounds.minX) * self.reverseTileSize, (y - WorldBounds.minY) * self.reverseTileSize
+        indexX = math.modf((x - WorldBounds.minX) * self.reverseTileSize)
+        indexY = math.modf((y - WorldBounds.minY) * self.reverseTileSize)
+        return indexX, indexY
     end
 end)
 if Debug then Debug.endFile() end

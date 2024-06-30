@@ -1,6 +1,6 @@
-if Debug then Debug.beginFile "TerrainIO.Tiles.TileTemplate" end
-OnInit.module("TerrainIO.Tiles.TileTemplate", function(require)
-    require "TerrainIO.Tiles.Tile"
+if Debug then Debug.beginFile "TerrainIO/Tiles/TileTemplate" end
+OnInit.module("TerrainIO/Tiles/TileTemplate", function(require)
+    require "TerrainIO/Tiles/Tile"
 
     ---@class TileTemplate
     ---@field sizeX integer size in amount of tiles on X axis
@@ -56,10 +56,10 @@ OnInit.module("TerrainIO.Tiles.TileTemplate", function(require)
 
     ---@return fun():nil|Tile, integer|nil, integer|nil
     function OnDemandTileTemplate:iterateTiles()
-        local x, y, xIndex, yIndex = self.startX, self.startY, 0, 1
+        local x, y, xIndex, yIndex = self.startX, self.startY, -1, 0
         return function()
             xIndex = xIndex + 1
-            if xIndex > self.sizeX then x, y, xIndex, yIndex = self.startX, self.resolution:nextTileCoordinate(y), 1, yIndex + 1 end
+            if xIndex > self.sizeX then x, y, xIndex, yIndex = self.startX, self.resolution:nextTileCoordinate(y), 0, yIndex + 1 end
             if yIndex > self.sizeY then return nil, nil, nil end
             local tileInfo = self.resolution:getTileForCoordinates(x, y)
             x = self.resolution:nextTileCoordinate(x)
