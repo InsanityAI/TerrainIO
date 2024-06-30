@@ -16,11 +16,12 @@ OnInit.module("TerrainIO/Tiles/Tile", function(require)
     ---@param variation integer
     ---@param pathing table<pathingtype, boolean>
     ---@return Tile
-    function SimpleTile.create(tile, variation, pathing)
+    function SimpleTile.create(tile, variation, pathing, blighted)
         return setmetatable({
             tile = tile,
             variation = variation,
-            pathing = pathing
+            pathing = pathing,
+            blighted = blighted
         }, SimpleTile)
     end
 
@@ -30,7 +31,7 @@ OnInit.module("TerrainIO/Tiles/Tile", function(require)
     end
 
     function SimpleTile:isBlighted()
-        return self.pathing[PATHING_TYPE_BLIGHTPATHING] or false
+        return self.blighted
     end
 
     ---@alias RandomTileSetup {varStart: integer, varEnd: integer, weight: number, tile: integer}
@@ -38,6 +39,7 @@ OnInit.module("TerrainIO/Tiles/Tile", function(require)
     ---@class RandomTile: Tile, table
     ---@field n integer
     ---@field [integer] RandomTileSetup
+    ---@field blightChance number? -- [0, 1]
     RandomTile = {}
     RandomTile.__index = RandomTile
 
@@ -71,6 +73,10 @@ OnInit.module("TerrainIO/Tiles/Tile", function(require)
             end
             ---@diagnostic disable-next-line: missing-return
         end
+    end
+
+    function RandomTile:isBlighted()
+        return self.blightChance and self.blightChance < math.random() or false
     end
 end)
 if Debug then Debug.endFile() end

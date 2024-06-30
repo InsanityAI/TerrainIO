@@ -36,9 +36,6 @@ OnInit.module("TerrainIO/Tiles/TilePrinter", function(require)
                 SetTerrainPathable(x, y, PATHING_TYPE_WALKABILITY, tileInfo.pathing[PATHING_TYPE_WALKABILITY])
             end
             if addBlight and tileInfo:isBlighted() then
-                -- SetBlight has this absurd problem where when coordinates are negative it pushed the x and y to the negative axis by 1 tile over...
-                if x < 0 then x = x + singleTileResolution.tileSize end
-                if y < 0 then y = y + singleTileResolution.tileSize end
                 SetBlight(playerNeutral, x, y, resolution.tileSize, true)
             end
         end
