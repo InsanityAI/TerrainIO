@@ -19,8 +19,8 @@ OnInit.module("TerrainIO/Tiles/TileScanner", function(require)
         if y1 > y2 then y1, y2 = y2, y1 end
 
         x1 = singleTileResolution:getTileCenter(x1)
-        x2 = singleTileResolution:getTileCenter(y1)
-        y1 = singleTileResolution:getTileCenter(x2)
+        x2 = singleTileResolution:getTileCenter(x2)
+        y1 = singleTileResolution:getTileCenter(y1)
         y2 = singleTileResolution:getTileCenter(y2)
         local startX, startY = resolution:getTileIndexes(x1, y1)
         local endX, endY = resolution:getTileIndexes(x2, y2)

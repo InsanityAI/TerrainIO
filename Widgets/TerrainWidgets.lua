@@ -4,23 +4,32 @@ OnInit.module("TerrainIO/Widgets/TerrainWidgets", function(require)
     require "SetUtils"
 
     ---@class TerrainWidgets
+    ---@field sizeX integer
+    ---@field sizeY integer
     ---@field iterate fun(): fun():TerrainWidget|nil
 
-    ---@class InMemoryTerrainWidgets
+    ---@class InMemoryTerrainWidgets: TerrainWidgets
     ---@field n integer
     ---@field [integer] TerrainWidget
     InMemoryTerrainWidgets = {}
     InMemoryTerrainWidgets.__index = InMemoryTerrainWidgets
 
+    ---@param terrainWidgets TerrainWidgets
     ---@return InMemoryTerrainWidgets
-    function InMemoryTerrainWidgets.create()
-        return setmetatable({}, InMemoryTerrainWidgets)
+    function InMemoryTerrainWidgets.create(terrainWidgets)
+        local newTerrainWidgets = setmetatable({ sizeX = terrainWidgets.sizeX, sizeY = terrainWidgets.sizeY, n = 0 }, InMemoryTerrainWidgets)
+
+        for terrainWidget in terrainWidgets:iterate() do
+            newTerrainWidgets:add(terrainWidget)
+        end
+
+        return newTerrainWidgets
     end
 
     ---@param widget TerrainWidget
     function InMemoryTerrainWidgets:add(widget)
-        self[self.n] = widget
         self.n = self.n + 1
+        self[self.n] = widget
     end
 
     ---@return fun(): TerrainWidget|nil
@@ -34,9 +43,6 @@ OnInit.module("TerrainIO/Widgets/TerrainWidgets", function(require)
 
     ---@class OnDemandTerrainWidgets: TerrainWidgets
     ---@field rect rect
-    ---@field units Set
-    ---@field destructables Set
-    ---@field items Set
     ---@field resolution TileResolution
     OnDemandTerrainWidgets = {}
     OnDemandTerrainWidgets.__index = OnDemandTerrainWidgets
@@ -45,33 +51,39 @@ OnInit.module("TerrainIO/Widgets/TerrainWidgets", function(require)
     ---@param rect rect
     ---@return OnDemandTerrainWidgets
     function OnDemandTerrainWidgets.create(rect, resolution)
+        local x1 = resolution:getTileCenter(GetRectMinX(rect))
+        local x2 = resolution:getTileCenter(GetRectMaxX(rect))
+        local y1 = resolution:getTileCenter(GetRectMinY(rect))
+        local y2 = resolution:getTileCenter(GetRectMaxY(rect))
+        local startX, startY = resolution:getTileIndexes(x1, y1)
+        local endX, endY = resolution:getTileIndexes(x2, y2)
+
         return setmetatable({
             rect = rect,
-            units = Set.create(),
-            destructables = Set.create(),
-            items = Set.create(),
-            resolution = resolution
-    }, OnDemandTerrainWidgets)
+            resolution = resolution,
+            sizeX = math.abs(endX - startX) + 1,
+            sizeY = math.abs(endY - startY) + 1,
+        }, OnDemandTerrainWidgets)
     end
 
     ---@return fun():TerrainWidget|nil
     function OnDemandTerrainWidgets:iterate()
-        SetUtils.getDestructablesInRect(self.rect, self.destructables)
-        SetUtils.getItemsInRect(self.rect, self.items)
-        SetUtils.getUnitsInRect(self.rect, self.units)
+        local destructables = SetUtils.getDestructablesInRect(self.rect)
+        local items = SetUtils.getItemsInRect(self.rect)
+        local units = SetUtils.getUnitsInRect(self.rect)
 
         local i = 0
-        local destructablesDone = self.destructables.n == 0
-        local itemsDone = self.items.n == 0
-        local unitsDone = self.units.n == 0
+        local destructablesDone = destructables.n == 0
+        local itemsDone = items.n == 0
+        local unitsDone = units.n == 0
         local relativeX = self.resolution:getTileCenter(GetRectMinX(self.rect))
         local relativeY = self.resolution:getTileCenter(GetRectMinY(self.rect))
         return function()
             i = i + 1
 
             if not destructablesDone then
-                local destructable = self.destructables.orderedKeys[i]
-                if self.destructables.n == i then
+                local destructable = destructables.orderedKeys[i]
+                if destructables.n == i then
                     destructablesDone = true
                     i = 0
                 end
@@ -79,8 +91,8 @@ OnInit.module("TerrainIO/Widgets/TerrainWidgets", function(require)
             end
 
             if not itemsDone then
-                local item = self.items.orderedKeys[i]
-                if self.items.n == i then
+                local item = items.orderedKeys[i]
+                if items.n == i then
                     itemsDone = true
                     i = 0
                 end
@@ -88,8 +100,8 @@ OnInit.module("TerrainIO/Widgets/TerrainWidgets", function(require)
             end
 
             if not unitsDone then
-                local unit = self.units.orderedKeys[i]
-                if self.units.n == i then
+                local unit = units.orderedKeys[i]
+                if units.n == i then
                     unitsDone = true
                     i = 0
                 end

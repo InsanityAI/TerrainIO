@@ -1,9 +1,16 @@
 if Debug then Debug.beginFile "TerrainIO/Tiles/Tile" end
 OnInit.module("TerrainIO/Tiles/Tile", function(require)
     ---@class Tile
+    ---@field type TileType
     ---@field pathing table<pathingtype, boolean>
     ---@field getTileVariation fun(self: Tile):integer, integer
     ---@field isBlighted fun(self: Tile): boolean
+
+    ---@enum TileType
+    TileType = {
+        SIMPLE = 1,
+        RANDOM = 2
+    }
 
     ---@class SimpleTile: Tile
     ---@field tile integer
@@ -18,6 +25,7 @@ OnInit.module("TerrainIO/Tiles/Tile", function(require)
     ---@return Tile
     function SimpleTile.create(tile, variation, pathing, blighted)
         return setmetatable({
+            type = TileType.SIMPLE,
             tile = tile,
             variation = variation,
             pathing = pathing,
@@ -61,6 +69,7 @@ OnInit.module("TerrainIO/Tiles/Tile", function(require)
         end
 
         o.pathing = pathing
+        o.type = TileType.RANDOM
         return o
     end
 

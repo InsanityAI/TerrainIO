@@ -14,22 +14,39 @@ OnInit.module("TerrainIO/Height/HeightMap", function(require)
     InMemoryHeightMap = {}
     InMemoryHeightMap.__index = InMemoryHeightMap
 
+    ---@param heightMap HeightMap
+    ---@return InMemoryHeightMap
+    function InMemoryHeightMap.create(heightMap)
+        local newHeightMap = setmetatable({ sizeX = heightMap.sizeX, sizeY = heightMap.sizeY }, InMemoryHeightMap)
+
+        for xIndex, yIndex, height in heightMap:iterate() do
+            if newHeightMap[xIndex] then
+                newHeightMap[xIndex][yIndex] = height
+            else
+                newHeightMap[xIndex] = { [yIndex] = height }
+            end
+        end
+
+        return newHeightMap
+    end
+
     ---@param x integer
     ---@param y integer
     ---@return number?
     function InMemoryHeightMap:getHeight(x, y)
-        local result = self[x] ---@type number[]|number
-        if result then result = result[y] end
-        return result
+        if self[x] then
+            return self[x][y]
+        end
+        return nil
     end
 
     ---@return fun():integer|nil, integer|nil, number|nil
     function InMemoryHeightMap:iterate()
-        local x, y = 0, 1
+        local x, y = -1, 0
         return function()
             x = x + 1
-            if x > self.sizeX then x, y = 1, y + 1 end
-            if y > self.sizeY then return nil, nil, nil end
+            if x >= self.sizeX then x, y = 0, y + 1 end
+            if y >= self.sizeY then return nil, nil, nil end
             return x, y, self:getHeight(x, y)
         end
     end
@@ -48,8 +65,8 @@ OnInit.module("TerrainIO/Height/HeightMap", function(require)
         local x, y, xIndex, yIndex = self.startX, self.startY, -1, 0
         return function()
             xIndex = xIndex + 1
-            if xIndex > self.sizeX then x, y, xIndex, yIndex = self.startX, singleTileResolution:nextTileCoordinate(y), 0, yIndex + 1 end
-            if yIndex > self.sizeY then return nil, nil, nil end
+            if xIndex >= self.sizeX then x, y, xIndex, yIndex = self.startX, singleTileResolution:nextTileCoordinate(y), 0, yIndex + 1 end
+            if yIndex >= self.sizeY then return nil, nil, nil end
 
             local height = GetPointZ(x, y) - self.relativeHeight
             x = singleTileResolution:nextTileCoordinate(x)

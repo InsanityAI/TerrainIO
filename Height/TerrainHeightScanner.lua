@@ -19,8 +19,8 @@ OnInit.module("TerrainIO/Height/TerrainHeightScanner", function(require)
         if y1 > y2 then y1, y2 = y2, y1 end
 
         x1 = singleTileResolution:getTileCenter(x1)
-        x2 = singleTileResolution:getTileCenter(y1)
-        y1 = singleTileResolution:getTileCenter(x2)
+        x2 = singleTileResolution:getTileCenter(x2)
+        y1 = singleTileResolution:getTileCenter(y1)
         y2 = singleTileResolution:getTileCenter(y2)
         local startX, startY = singleTileResolution:getTileIndexes(x1, y1)
         local endX, endY = singleTileResolution:getTileIndexes(x2, y2)
@@ -30,9 +30,9 @@ OnInit.module("TerrainIO/Height/TerrainHeightScanner", function(require)
             startY = y1,
             endX = x2,
             endY = y2,
-            sizeX = math.abs(endX - startX),
-            sizeY = math.abs(endY - startY),
-            relativeHeight = relativeHeight or 0
+            sizeX = math.abs(endX - startX) + 1,
+            sizeY = math.abs(endY - startY) + 1,
+            relativeHeight = relativeHeight or GetCliffHeight(startX, startY)
         }, OnDemandHeightMap)
     end
 

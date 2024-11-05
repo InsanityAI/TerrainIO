@@ -8,33 +8,31 @@ OnInit.module("TerrainIO/Tiles/AsyncTileTemplate", function(require)
 
     local processor ---@type TaskProcessor
 
-    ---@param TileTemplate TileTemplate
+    ---@param tileTemplate TileTemplate
     ---@return Observable InMemoryTileTemplate
-    function InMemoryTileTemplate.createAsync(TileTemplate)
+    function InMemoryTileTemplate.createAsync(tileTemplate)
         local newTileTemplate = setmetatable({}, InMemoryTileTemplate)
-        newTileTemplate.sizeX = TileTemplate.sizeX
-        newTileTemplate.sizeY = TileTemplate.sizeY
+        newTileTemplate.sizeX = tileTemplate.sizeX
+        newTileTemplate.sizeY = tileTemplate.sizeY
 
         local result = Subject.create()
-        local tileIterator = TileTemplate:iterateTiles()
+        local tileIterator = tileTemplate:iterate()
         local task = processor:enqueuePeriodic(tileIterator, 0, 100, TaskAPI.REACTIVE) --[[@as TaskObservable]]
 
-        local tiles = {}
         ---@param delay number
-        ---@param tile Tile
         ---@param xIndex integer
         ---@param yIndex integer
-        task:subscribe(function(delay, tile, xIndex, yIndex)
-            if tiles[xIndex] then
-                tiles[xIndex][yIndex] = tile
+        ---@---@param tile Tile
+        task:subscribe(function(delay, xIndex, yIndex, tile)
+            if newTileTemplate[xIndex] then
+                newTileTemplate[xIndex][yIndex] = tile
             else
-                tiles[xIndex] = { [yIndex] = tile }
+                newTileTemplate[xIndex] = { [yIndex] = tile }
             end
         end, result.onError, function(delay)
             result:onNext(delay, newTileTemplate)
             result:onCompleted()
         end)
-        newTileTemplate.tiles = tiles
         return result
     end
 

@@ -17,10 +17,37 @@ OnInit.module("TerrainIO/Tiles/TilePrinter", function(require)
     ---@param startY number
     ---@param sourceTask TileTemplate
     ---@param addBlight boolean
-    function TilePrinter.PrintFrom(resolution, startX, startY, sourceTask, addBlight)
-        startX, startY = singleTileResolution:getTileCenter(startX), singleTileResolution:getTileCenter(startY)
-        for tileInfo, xIndex, yIndex in sourceTask:iterateTiles() do
-            local x, y = startX + xIndex * resolution.tileSize, startY + yIndex * resolution.tileSize
+    ---@param rotate TerrainIORotate?
+    function TilePrinter.PrintFrom(resolution, startX, startY, sourceTask, addBlight, rotate)
+        if rotate == TerrainIORotate.ROTATE_CLOCKWISE_90 then
+            startX = singleTileResolution:getTileCenter(startX)
+            startY = singleTileResolution:getTileCenter(startY) + sourceTask.sizeX * singleTileResolution.tileSize
+        elseif rotate == TerrainIORotate.ROTATE_CLOCKWISE_180 then
+            startX = singleTileResolution:getTileCenter(startX) + sourceTask.sizeX * singleTileResolution.tileSize
+            startY = singleTileResolution:getTileCenter(startY) + sourceTask.sizeY * singleTileResolution.tileSize
+        elseif rotate == TerrainIORotate.ROTATE_CLOCKWISE_270 then
+            startX = singleTileResolution:getTileCenter(startX) + sourceTask.sizeY * singleTileResolution.tileSize
+            startY = singleTileResolution:getTileCenter(startY)
+        else
+            startX = singleTileResolution:getTileCenter(startX)
+            startY = singleTileResolution:getTileCenter(startY)
+        end
+
+        for xIndex, yIndex, tileInfo in sourceTask:iterate() do
+            local x, y ---@type number, number
+            if rotate == TerrainIORotate.ROTATE_CLOCKWISE_90 then
+                x = startX + yIndex * resolution.tileSize
+                y = startY - xIndex * resolution.tileSize
+            elseif rotate == TerrainIORotate.ROTATE_CLOCKWISE_180 then
+                x = startX - xIndex * resolution.tileSize
+                y = startY - yIndex * resolution.tileSize
+            elseif rotate == TerrainIORotate.ROTATE_CLOCKWISE_270 then
+                x = startX - yIndex * resolution.tileSize
+                y = startY + xIndex * resolution.tileSize
+            else
+                x = startX + xIndex * resolution.tileSize
+                y = startY + yIndex * resolution.tileSize
+            end
             local tile, variation = tileInfo:getTileVariation()
             if tile then
                 SetTerrainType(x, y, tile, variation, resolution.sizeInTiles, SHAPE_SQUARE)
@@ -40,6 +67,5 @@ OnInit.module("TerrainIO/Tiles/TilePrinter", function(require)
             end
         end
     end
-
 end)
 if Debug then Debug.endFile() end

@@ -9,16 +9,40 @@ OnInit.module("TerrainIO/Height/TerrainHeightPrinter", function(require)
     ---@param startX number
     ---@param startY number
     ---@param heightMap HeightMap
-    function TerrainHeightPrinter.PrintFrom(startX, startY, heightMap)
-        startX, startY = singleTileResolution:getTileCenter(startX), singleTileResolution:getTileCenter(startY)
+    ---@param rotate TerrainIORotate?
+    function TerrainHeightPrinter.PrintFrom(startX, startY, heightMap, rotate)
+        if rotate == TerrainIORotate.ROTATE_CLOCKWISE_90 then
+            startX = singleTileResolution:getTileCenter(startX)
+            startY = singleTileResolution:getTileCenter(startY) + heightMap.sizeX * singleTileResolution.tileSize
+        elseif rotate == TerrainIORotate.ROTATE_CLOCKWISE_180 then
+            startX = singleTileResolution:getTileCenter(startX) + heightMap.sizeX * singleTileResolution.tileSize
+            startY = singleTileResolution:getTileCenter(startY) + heightMap.sizeY * singleTileResolution.tileSize
+        elseif rotate == TerrainIORotate.ROTATE_CLOCKWISE_270 then
+            startX = singleTileResolution:getTileCenter(startX) + heightMap.sizeY * singleTileResolution.tileSize
+            startY = singleTileResolution:getTileCenter(startY)
+        else
+            startX = singleTileResolution:getTileCenter(startX)
+            startY = singleTileResolution:getTileCenter(startY)
+        end
+
         for xIndex, yIndex, height in heightMap:iterate() do
-            local x, y = startX + xIndex * singleTileResolution.tileSize, startY + yIndex * singleTileResolution.tileSize
-            TerrainDeformCrater(x, y, singleTileResolution.tileSize, -height/1.618, 1, true)
-            -- about height/1.618, I don't know why it results in more visually accurate results in comparison to the 
-            -- original heightMap, but I'll keep it. 
-            -- Tried golden ratio number cuz my caveman brain remembers it being important ¯\_(ツ)_/¯
+            local x, y ---@type number, number
+            if rotate == TerrainIORotate.ROTATE_CLOCKWISE_90 then
+                x = startX + yIndex * singleTileResolution.tileSize
+                y = startY - xIndex * singleTileResolution.tileSize
+            elseif rotate == TerrainIORotate.ROTATE_CLOCKWISE_180 then
+                x = startX - xIndex * singleTileResolution.tileSize
+                y = startY - yIndex * singleTileResolution.tileSize
+            elseif rotate == TerrainIORotate.ROTATE_CLOCKWISE_270 then
+                x = startX - yIndex * singleTileResolution.tileSize
+                y = startY + xIndex * singleTileResolution.tileSize
+            else
+                x = startX + xIndex * singleTileResolution.tileSize
+                y = startY + yIndex * singleTileResolution.tileSize
+            end
+
+            TerrainDeformCrater(x, y, singleTileResolution.tileSize, GetPointZ(x, y) - GetCliffHeight(x,y) - height, 1, true)
         end
     end
-
 end)
 if Debug then Debug.endFile() end

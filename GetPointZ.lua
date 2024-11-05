@@ -10,5 +10,12 @@ OnInit.global("GetPointZ", function(require)
         MoveLocation(point, x, y)
         return GetLocationZ(point)
     end
+
+    ---@param x number
+    ---@param y number
+    ---@return number z
+    function GetCliffHeight(x, y)
+        return (GetTerrainCliffLevel(x, y) - 2) * bj_CLIFFHEIGHT
+    end
 end)
 if Debug then Debug.endFile() end

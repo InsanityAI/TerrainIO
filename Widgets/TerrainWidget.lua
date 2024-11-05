@@ -15,7 +15,29 @@ OnInit.module("TerrainIO/Widgets/TerrainWidget", function(require)
     ---@field facing number
     ---@field life number
     ---@field type fun(self:TerrainWidget):TerrainWidgetType
-    ---@field spawnAt fun(self:TerrainWidget, x: number, y: number, z:number?): widget
+    ---@field spawnAt fun(self:TerrainWidget, rotate: TerrainIORotate, x: number, y: number, z:number?): widget
+
+    ---@param widget TerrainWidget
+    ---@param startX number
+    ---@param startY number
+    ---@param rotate TerrainIORotate?
+    local function getFinalCoordinates(widget, startX, startY, rotate)
+        local x, y ---@type number, number
+        if rotate == TerrainIORotate.ROTATE_CLOCKWISE_90 then
+            x = startX + widget.y
+            y = startY - widget.x
+        elseif rotate == TerrainIORotate.ROTATE_CLOCKWISE_180 then
+            x = startX - widget.x
+            y = startY - widget.y
+        elseif rotate == TerrainIORotate.ROTATE_CLOCKWISE_270 then
+            x = startX - widget.y
+            y = startY + widget.x
+        else
+            x = startX + widget.x
+            y = startY + widget.y
+        end
+        return x, y
+    end
 
     ---@class TerrainDestructable: TerrainWidget
     ---@field scale number?
@@ -68,28 +90,30 @@ OnInit.module("TerrainIO/Widgets/TerrainWidget", function(require)
         return TerrainWidgetType.DESTRUCTABLE
     end
 
+    ---@param rotate TerrainIORotate
     ---@param x number
     ---@param y number
     ---@param z number
     ---@return destructable
-    function TerrainDestructable:spawnAt(x, y, z)
+    function TerrainDestructable:spawnAt(rotate, x, y, z)
+        x, y = getFinalCoordinates(self, x, y, rotate)
         local isDead = self.life <= 0
         local destructable ---@type destructable
 
         if z or self.z then
             if isDead then
-                destructable = CreateDeadDestructableZ(self.objectId, self.x + x, self.y + y, (self.z or 0) + (z or 0),
+                destructable = CreateDeadDestructableZ(self.objectId, x, y, (self.z or 0) + (z or 0),
                     self.facing, self.scale or 1.00, self.variation or 1)
             else
-                destructable = CreateDestructableZ(self.objectId, self.x + x, self.y + y, (self.z or 0) + (z or 0),
+                destructable = CreateDestructableZ(self.objectId, x, y, (self.z or 0) + (z or 0),
                     self.facing, self.scale or 1.00, self.variation or 1)
             end
         else
             if isDead then
-                destructable = CreateDeadDestructable(self.objectId, self.x + x, self.y + y, self.facing,
+                destructable = CreateDeadDestructable(self.objectId, x, y, self.facing,
                     self.scale or 1.00, self.variation or 1)
             else
-                destructable = CreateDestructable(self.objectId, self.x + x, self.y + y, self.facing, self.scale or 1.00,
+                destructable = CreateDestructable(self.objectId, x, y, self.facing, self.scale or 1.00,
                     self.variation or 1)
             end
         end
@@ -153,11 +177,13 @@ OnInit.module("TerrainIO/Widgets/TerrainWidget", function(require)
         return TerrainWidgetType.ITEM
     end
 
+    ---@param rotate TerrainIORotate
     ---@param x number
     ---@param y number
     ---@return item
-    function TerrainItem:spawnAt(x, y)
-        local item = CreateItem(self.objectId, x + self.x, y + self.y)
+    function TerrainItem:spawnAt(rotate, x, y)
+        x, y = getFinalCoordinates(self, x, y, rotate)
+        local item = CreateItem(self.objectId, x, y)
 
         if self.pawnable ~= nil then
             SetItemPawnable(item, self.pawnable)
@@ -226,12 +252,14 @@ OnInit.module("TerrainIO/Widgets/TerrainWidget", function(require)
         return TerrainWidgetType.UNIT
     end
 
+    ---@param rotate TerrainIORotate
     ---@param x number
     ---@param y number
     ---@param z number?
     ---@return unit
-    function TerrainUnit:spawnAt(x, y, z)
-        local unit = CreateUnit(Player(self.ownerId), self.objectId, self.x + x, self.y + y, self.facing)
+    function TerrainUnit:spawnAt(rotate, x, y, z)
+        x, y = getFinalCoordinates(self, x, y, rotate)
+        local unit = CreateUnit(Player(self.ownerId), self.objectId, x, y, self.facing)
 
         if self.z or z then --may require AutoFly
             SetUnitFlyHeight(unit, (self.z or 0) + (z or 0), 0)
