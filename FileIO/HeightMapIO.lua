@@ -14,7 +14,7 @@ OnInit.module("TerrainIO/FileIO/HeightMapIO", function(require)
         ---@param templateName string
         ---@return HeightMap
         Load = function(templateName)
-            return HeightMapSerializer.Deserialize(FileIO.Load("height" .. templateName .. ".pld"))
+            return HeightMapSerializer.Deserialize(FileIO.Load("height" .. templateName .. ".pld") --[[@as string]])
         end
     }
 end)

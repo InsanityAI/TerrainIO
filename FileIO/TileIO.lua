@@ -14,7 +14,7 @@ OnInit.module("TerrainIO/FileIO/TileIO", function(require)
         ---@param templateName string
         ---@return TileTemplate
         Load = function(templateName)
-            return TileTemplateSerializer.Deserialize(FileIO.Load("tile" .. templateName .. ".pld"))
+            return TileTemplateSerializer.Deserialize(FileIO.Load("tile" .. templateName .. ".pld") --[[@as string]])
         end
     }
 end)

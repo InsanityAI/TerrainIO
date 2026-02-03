@@ -14,7 +14,7 @@ OnInit.module("TerrainIO/FileIO/TerrainWidgetsIO", function (require)
         ---@param templateName string
         ---@return TerrainWidgets
         Load = function(templateName)
-            return TerrainWidgetsSerialization.Deserialize(FileIO.Load("widgets" .. templateName .. ".pld"))
+            return TerrainWidgetsSerialization.Deserialize(FileIO.Load("widgets" .. templateName .. ".pld") --[[@as string]])
         end
     }
 end)
